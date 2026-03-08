@@ -3,17 +3,15 @@ const { CloudinaryStorage } = require("multer-storage-cloudinary");
 const multer = require("multer");
 const path = require("path");
 
-// Get cloud name from environment - try multiple approaches
+// Get cloud name from environment
 let cloudName = process.env.CLOUDINARY_CLOUD_NAME || "";
 
 // Handle different formats of CLOUDINARY_CLOUD_NAME
+// Format: cloudinary://api_key:api_secret@cloud_name
 if (cloudName.includes("://")) {
-  // Format: cloudinary://api_key:api_secret@cloud_name
   const parts = cloudName.split("@");
   if (parts.length > 1) {
-    cloudName = parts[1];
-  } else {
-    cloudName = cloudName.replace("cloudinary://", "");
+    cloudName = parts[parts.length - 1]; // Get everything after the last @
   }
 }
 
