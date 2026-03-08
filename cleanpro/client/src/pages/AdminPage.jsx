@@ -96,10 +96,21 @@ export default function AdminPage() {
     }
   };
 
+  // Handle both Cloudinary URLs and local file paths
+  const getImageUrl = (img) => {
+    if (!img) return null;
+    // If it's already a full URL (Cloudinary or other), use it directly
+    if (img.startsWith("http://") || img.startsWith("https://")) {
+      return img;
+    }
+    // Otherwise, it's a local file - prepend /uploads/
+    return `/uploads/${img}`;
+  };
+
   const handleEdit = (p) => {
     setEditingId(p._id);
     setForm({ name: p.name, price: p.price, category: p.category, description: p.description || "", badge: p.badge || "", stock: p.stock || "", status: p.status });
-    setImagePreview(p.image ? `/uploads/${p.image}` : null);
+    setImagePreview(getImageUrl(p.image));
     setImageFile(null);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };

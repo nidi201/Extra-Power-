@@ -91,8 +91,16 @@ export default function StorePage() {
     setActiveCategory(mapped);
   };
 
-  const imgSrc = (img) =>
-    img ? `/uploads/${img}` : "https://via.placeholder.com/400x400?text=No+Image";
+  // Handle both Cloudinary URLs and local file paths
+  const imgSrc = (img) => {
+    if (!img) return "https://via.placeholder.com/400x400?text=No+Image";
+    // If it's already a full URL (Cloudinary or other), use it directly
+    if (img.startsWith("http://") || img.startsWith("https://")) {
+      return img;
+    }
+    // Otherwise, it's a local file - prepend /uploads/
+    return `/uploads/${img}`;
+  };
 
   // Skeleton card for loading state
   const SkeletonCard = () => (
