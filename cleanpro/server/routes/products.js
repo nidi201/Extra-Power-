@@ -35,11 +35,16 @@ router.post("/", upload.single("image"), async (req, res) => {
   try {
     const { name, price, category, description, badge, status, stock } = req.body;
     
-    // Handle image - support both Cloudinary URL and local path
     let image = "";
     if (req.file) {
-      // Cloudinary returns the full URL in path
-      image = req.file.path || "";
+      // Handle both Cloudinary URL and local file path
+      if (req.file.path && req.file.path.includes("cloudinary")) {
+        // Cloudinary returns the full URL in path
+        image = req.file.path;
+      } else if (req.file.path) {
+        // Local file - return just the filename
+        image = req.file.filename;
+      }
     }
     
     const product = new Product({ 
@@ -67,8 +72,12 @@ router.put("/:id", upload.single("image"), async (req, res) => {
     const updates = { ...req.body };
     
     if (req.file) {
-      // Cloudinary returns the full URL in path
-      updates.image = req.file.path || "";
+      // Handle both Cloudinary URL and local file path
+      if (req.file.path && req.file.path.includes("cloudinary")) {
+        updates.image = req.file.path;
+      } else if (req.file.path) {
+        updates.image = req.file.filename;
+      }
     }
     
     const product = await Product.findByIdAndUpdate(req.params.id, updates, { new: true });

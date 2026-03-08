@@ -1,31 +1,63 @@
 const cloudinary = require("cloudinary").v2;
 const { CloudinaryStorage } = require("multer-storage-cloudinary");
 const multer = require("multer");
+const path = require("path");
 
-// Get cloud name from environment
+// Get cloud name from environment - try multiple approaches
 let cloudName = process.env.CLOUDINARY_CLOUD_NAME || "";
 
-// If cloud_name contains "://", extract the cloud name after @
+// Handle different formats of CLOUDINARY_CLOUD_NAME
 if (cloudName.includes("://")) {
+  // Format: cloudinary://api_key:api_secret@cloud_name
   const parts = cloudName.split("@");
-  cloudName = parts[1] || parts[0];
+  if (parts.length > 1) {
+    cloudName = parts[1];
+  } else {
+    cloudName = cloudName.replace("cloudinary://", "");
+  }
 }
 
-console.log("Cloudinary Cloud Name:", cloudName);
+console.log("Cloud name extracted:", cloudName);
 
-cloudinary.config({
-  cloud_name: cloudName,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
-});
+// Check if we have valid credentials
+const hasValidCredentials = cloudName && 
+  process.env.CLOUDINARY_API_KEY && 
+  process.env.CLOUDINARY_API_SECRET;
 
-const storage = new CloudinaryStorage({
-  cloudinary,
-  params: { 
-    folder: "cleanpro", 
-    allowed_formats: ["jpg", "jpeg", "png", "webp"],
-  },
-});
+if (hasValidCredentials) {
+  console.log("Configuring Cloudinary...");
+  cloudinary.config({
+    cloud_name: cloudName,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET,
+  });
+} else {
+  console.log("⚠️ Cloudinary credentials not found - using local storage fallback");
+}
+
+// Configure storage based on credentials
+let storage;
+if (hasValidCredentials) {
+  // Use Cloudinary storage
+  storage = new CloudinaryStorage({
+    cloudinary,
+    params: { 
+      folder: "cleanpro", 
+      allowed_formats: ["jpg", "jpeg", "png", "webp"],
+    },
+  });
+} else {
+  // Use local disk storage as fallback
+  storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+      cb(null, path.join(__dirname, "../uploads"));
+    },
+    filename: function (req, file, cb) {
+      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+      cb(null, uniqueSuffix + path.extname(file.originalname));
+    }
+  });
+}
 
 // Configure multer with storage
 const upload = multer({ 
@@ -35,7 +67,5 @@ const upload = multer({
   }
 });
 
-// Export as default for backward compatibility
 module.exports = upload;
-module.exports.default = upload;
 
