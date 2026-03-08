@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import axios from "axios";
+import api from "../api/axios";
 import { useAuth } from "../context/AuthContext";
 
 const CATEGORIES = ["Kitchen", "Bathroom", "Hand Care", "Automotive", "Industrial", "Solar", "Food Grade", "Cleaning", "Personal Care", "Sanitary", "Hand Washing"];
@@ -35,7 +35,7 @@ export default function AdminPage() {
   const fetchProducts = async () => {
     setLoading(true);
     try {
-      const res = await axios.get("/api/products");
+      const res = await api.get("/api/products");
       setProducts(res.data);
     } catch (err) {
       showToast("Failed to load products", "error");
@@ -67,10 +67,10 @@ export default function AdminPage() {
       if (imageFile) data.append("image", imageFile);
 
       if (editingId) {
-        await axios.put(`/api/products/${editingId}`, data);
+        await api.put(`/api/products/${editingId}`, data);
         showToast("Product updated!");
       } else {
-        await axios.post("/api/products", data);
+        await api.post("/api/products", data);
         showToast("Product published!");
       }
       resetForm();
@@ -92,7 +92,7 @@ export default function AdminPage() {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`/api/products/${id}`);
+      await api.delete(`/api/products/${id}`);
       showToast("Product deleted");
       setDeleteConfirm(null);
       fetchProducts();

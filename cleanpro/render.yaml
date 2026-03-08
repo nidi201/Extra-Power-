@@ -1,0 +1,29 @@
+# Render Deployment Configuration
+# For deployment, follow these steps:
+
+## Option 1: Deploy Server on Render
+
+1. Push your code to GitHub (already done)
+2. Go to https://dashboard.render.com
+3. Create a new "Web Service"
+4. Connect your GitHub repository
+5. Configure:
+   - Build Command: `npm install`
+   - Start Command: `npm start`
+   - Environment Variables:
+     - `MONGO_URI`: Get from MongoDB Atlas (free tier)
+     - `PORT`: 5000
+     - `CLOUDINARY_CLOUD_NAME`: Your Cloudinary cloud name
+     - `CLOUDINARY_API_KEY`: Your Cloudinary API key
+     - `CLOUDINARY_API_SECRET`: Your Cloudinary API secret
+     - `JWT_SECRET`: A random string for authentication
+
+## Option 2: Deploy Client on Vercel (Recommended for React)
+
+1. Go to https://vercel.com
+2. Import your GitHub repository
+3. Set directory to `client`
+4. Add environment variable:
+   - `VITE_API_URL`: Your Render server URL (e.g., https://cleanpro-server.onrender.com)
+5. Deploy!
+

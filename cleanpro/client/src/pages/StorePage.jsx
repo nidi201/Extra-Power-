@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import api from "../api/axios";
 import bg from "../../assests/bg.jpeg";
 import { FaThLarge, FaHandSparkles, FaCar, FaIndustry } from "react-icons/fa";
 import { GiKitchenKnives } from "react-icons/gi";
@@ -63,7 +63,7 @@ export default function StorePage() {
       const params = { status: "active" };
       if (activeCategory !== "All Products") params.category = activeCategory;
       if (search) params.search = search;
-      const res = await axios.get("/api/products", { params });
+      const res = await api.get("/api/products", { params });
       setProducts(res.data);
       setTotalPages(Math.max(1, Math.ceil(res.data.length / ITEMS_PER_PAGE)));
     } catch (err) {
