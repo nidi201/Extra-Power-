@@ -1,0 +1,18 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800;900&family=Bebas+Neue&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* { box-sizing: border-box; }
+body { font-family: 'DM Sans', sans-serif; }
+
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 4px; }
+
+.hero-title { font-family: 'Bebas Neue', sans-serif; letter-spacing: 0.02em; }
+
+.product-card { transition: transform 0.2s ease, box-shadow 0.2s ease; }
+.product-card:hover { transform: translateY(-4px); box-shadow: 0 20px 40px -8px rgba(19,127,236,0.15); }
+.product-card:hover .product-img { transform: scale(1.08); }
+.product-img { transition: transform 0.4s ease; }
