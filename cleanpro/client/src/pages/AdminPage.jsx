@@ -410,7 +410,7 @@ export default function AdminPage() {
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-3">
                           <div className="w-10 h-10 rounded-xl bg-slate-100 overflow-hidden flex-shrink-0">
-                            <img src={p.image ? `/uploads/${p.image}` : "https://via.placeholder.com/40"} alt={p.name} className="w-full h-full object-cover" />
+                            <img src={getImageUrl(p.image) || "https://via.placeholder.com/40"} alt={p.name} className="w-full h-full object-cover" />
                           </div>
                           <span className="text-sm font-bold text-slate-800">{p.name}</span>
                         </div>
