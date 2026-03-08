@@ -34,11 +34,29 @@ router.get("/:id", async (req, res) => {
 router.post("/", upload.single("image"), async (req, res) => {
   try {
     const { name, price, category, description, badge, status, stock } = req.body;
-    const image = req.file ? req.file.path : "";
-    const product = new Product({ name, price, category, description, badge, status, stock, image });
+    
+    // Handle image - support both Cloudinary URL and local path
+    let image = "";
+    if (req.file) {
+      // Cloudinary returns the full URL in path
+      image = req.file.path || "";
+    }
+    
+    const product = new Product({ 
+      name, 
+      price, 
+      category, 
+      description, 
+      badge, 
+      status, 
+      stock, 
+      image 
+    });
+    
     await product.save();
     res.status(201).json(product);
   } catch (err) {
+    console.error("Error creating product:", err);
     res.status(400).json({ error: err.message });
   }
 });
@@ -47,11 +65,17 @@ router.post("/", upload.single("image"), async (req, res) => {
 router.put("/:id", upload.single("image"), async (req, res) => {
   try {
     const updates = { ...req.body };
-    if (req.file) updates.image = req.file.filename;
+    
+    if (req.file) {
+      // Cloudinary returns the full URL in path
+      updates.image = req.file.path || "";
+    }
+    
     const product = await Product.findByIdAndUpdate(req.params.id, updates, { new: true });
     if (!product) return res.status(404).json({ error: "Product not found" });
     res.json(product);
   } catch (err) {
+    console.error("Error updating product:", err);
     res.status(400).json({ error: err.message });
   }
 });
@@ -68,3 +92,4 @@ router.delete("/:id", async (req, res) => {
 });
 
 module.exports = router;
+

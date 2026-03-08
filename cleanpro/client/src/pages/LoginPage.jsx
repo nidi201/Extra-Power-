@@ -16,7 +16,14 @@ export default function LoginPage() {
       await login(email);
       navigate("/admin");
     } catch (err) {
-      setError(err.response?.data?.error || "Login failed");
+      // Provide more helpful error messages
+      if (err.code === 'ERR_NETWORK' || err.message === 'Network Error') {
+        setError("Cannot connect to server. If deployed, ensure VITE_API_URL is configured.");
+      } else if (err.response?.status === 404) {
+        setError("Server not found. Check your API configuration.");
+      } else {
+        setError(err.response?.data?.error || "Login failed. Try admin@cleaning.com");
+      }
     } finally {
       setLoading(false);
     }

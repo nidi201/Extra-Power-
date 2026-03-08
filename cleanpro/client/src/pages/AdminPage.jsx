@@ -76,7 +76,21 @@ export default function AdminPage() {
       resetForm();
       fetchProducts();
     } catch (err) {
-      showToast(err.response?.data?.error || "Failed to save product", "error");
+      // Provide more specific error messages
+      const errorMsg = err.response?.data?.error || err.message;
+      let userMsg = "Failed to save product";
+      
+      if (errorMsg.includes("Invalid file type")) {
+        userMsg = "Invalid file type. Only JPG, JPEG, PNG, and WEBP are allowed.";
+      } else if (errorMsg.includes("File too large")) {
+        userMsg = "File is too large. Maximum size is 10MB.";
+      } else if (errorMsg.includes("Cloudinary")) {
+        userMsg = "Image upload failed. Please check your internet connection and try again.";
+      } else {
+        userMsg = errorMsg;
+      }
+      
+      showToast(userMsg, "error");
     } finally {
       setSubmitting(false);
     }
