@@ -3,6 +3,11 @@ const { CloudinaryStorage } = require("multer-storage-cloudinary");
 const multer = require("multer");
 const path = require("path");
 
+console.log("=== Upload Middleware Loading ===");
+console.log("CLOUDINARY_CLOUD_NAME:", process.env.CLOUDINARY_CLOUD_NAME);
+console.log("CLOUDINARY_API_KEY:", process.env.CLOUDINARY_API_KEY ? "***set***" : "NOT SET");
+console.log("CLOUDINARY_API_SECRET:", process.env.CLOUDINARY_API_SECRET ? "***set***" : "NOT SET");
+
 // Get cloud name from environment
 let cloudName = process.env.CLOUDINARY_CLOUD_NAME || "";
 
@@ -22,12 +27,19 @@ const hasValidCredentials = cloudName &&
   process.env.CLOUDINARY_API_KEY && 
   process.env.CLOUDINARY_API_SECRET;
 
+console.log("Has valid credentials:", hasValidCredentials);
+
 if (hasValidCredentials) {
   console.log("Configuring Cloudinary...");
   cloudinary.config({
     cloud_name: cloudName,
     api_key: process.env.CLOUDINARY_API_KEY,
     api_secret: process.env.CLOUDINARY_API_SECRET,
+  });
+  
+  // Test Cloudinary connection
+  cloudinary.api.ping(function(result) {
+    console.log("Cloudinary ping result:", result);
   });
 } else {
   console.log("⚠️ Cloudinary credentials not found - using local storage fallback");
@@ -44,6 +56,7 @@ if (hasValidCredentials) {
       allowed_formats: ["jpg", "jpeg", "png", "webp"],
     },
   });
+  console.log("Using Cloudinary storage");
 } else {
   // Use local disk storage as fallback
   storage = multer.diskStorage({
@@ -55,6 +68,7 @@ if (hasValidCredentials) {
       cb(null, uniqueSuffix + path.extname(file.originalname));
     }
   });
+  console.log("Using local disk storage");
 }
 
 // Configure multer with storage
