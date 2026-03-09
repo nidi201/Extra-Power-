@@ -41,6 +41,8 @@ export default function StorePage() {
   const [email, setEmail] = useState("");
   const [search, setSearch] = useState("");
   const [searchInput, setSearchInput] = useState("");
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
 
   // --- NEW: API state ---
   const [products, setProducts] = useState([]);
@@ -135,13 +137,22 @@ export default function StorePage() {
               <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white text-sm font-black">C</div>
               <span className="text-lg font-black text-slate-900 tracking-tight">Extra power</span>
             </div>
-            <nav className="hidden md:flex items-center gap-6">
+            <nav className="hidden lg:flex items-center gap-6">
               {["Products", "Solutions", "Safety Data"].map((item) => (
                 <a key={item} className="text-sm font-semibold text-slate-500 hover:text-blue-600 transition-colors" href="#">{item}</a>
               ))}
             </nav>
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 sm:gap-4">
+            {/* Mobile Search Toggle */}
+            <button 
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="sm:hidden p-2 rounded-lg hover:bg-slate-100 text-slate-600"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </button>
             <div className="relative hidden sm:block">
               <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">🔍</span>
               <input
@@ -153,13 +164,51 @@ export default function StorePage() {
                 onKeyDown={handleSearchKey}
               />
             </div>
+            {/* Mobile Menu Button */}
+            <button 
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="lg:hidden p-2 rounded-lg hover:bg-slate-100 text-slate-600"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                {mobileMenuOpen ? (
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                ) : (
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                )}
+              </svg>
+            </button>
             <a
-              className="text-sm font-bold text-blue-600 hover:underline cursor-pointer"
+              className="text-sm font-bold text-blue-600 hover:underline cursor-pointer hidden sm:block"
               onClick={() => navigate("/admin/login")}
             >Admin Login</a>
-            <div className="w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center text-slate-500"> <img src={img} alt="profile" className="w-full h-full object-cover rounded-full " /></div>
+            <div className="w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 hidden sm:flex"> <img src={img} alt="profile" className="w-full h-full object-cover rounded-full " /></div>
           </div>
         </div>
+        {/* Mobile Menu Dropdown */}
+        {mobileMenuOpen && (
+          <div className="sm:hidden border-t border-slate-200 px-4 py-4 space-y-3 bg-white">
+            <div className="relative">
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">🔍</span>
+              <input
+                className="w-full rounded-xl border border-slate-200 bg-slate-100 py-2 pl-9 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/40"
+                placeholder="Search products..."
+                type="text"
+                value={searchInput}
+                onChange={(e) => setSearchInput(e.target.value)}
+                onKeyDown={handleSearchKey}
+              />
+            </div>
+            <div className="flex flex-col gap-2">
+              {["Products", "Solutions", "Safety Data"].map((item) => (
+                <a key={item} className="text-sm font-semibold text-slate-500 hover:text-blue-600 transition-colors py-2" href="#">{item}</a>
+              ))}
+              <a
+                className="text-sm font-bold text-blue-600 hover:underline cursor-pointer py-2"
+                onClick={() => navigate("/admin/login")}
+              >Admin Login</a>
+            </div>
+          </div>
+        )}
       </header>
 
       {/* Category pill bar */}
@@ -183,28 +232,28 @@ export default function StorePage() {
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Hero */}
-        <section className="relative mb-12 rounded-2xl overflow-hidden h-[420px] bg-slate-900">
+        <section className="relative mb-12 rounded-2xl overflow-hidden h-[300px] sm:h-[350px] lg:h-[420px] bg-slate-900">
           <img
             src={bg}
             alt="Hero"
             className="absolute inset-0 w-full h-full object-cover opacity-50"
           />
           <div className="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900/50 to-transparent" />
-          <div className="relative h-full flex flex-col justify-center px-10 md:w-3/5">
-            <span className="mb-4 inline-block rounded-full bg-blue-500/20 px-3 py-1 text-[11px] font-black uppercase tracking-widest text-blue-400 ring-1 ring-blue-500/40">
+          <div className="relative h-full flex flex-col justify-center px-6 md:px-10 lg:w-3/5">
+            <span className="mb-2 sm:mb-4 inline-block rounded-full bg-blue-500/20 px-3 py-1 text-[11px] font-black uppercase tracking-widest text-blue-400 ring-1 ring-blue-500/40">
               ☀️ Summer Sale
             </span>
-            <h1 className="hero-title text-6xl sm:text-7xl text-white leading-none mb-4">
+            <h1 className="hero-title text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-white leading-none mb-2 sm:mb-4">
               PROFESSIONAL<br /><span className="text-blue-400">CLEANING</span><br />SOLUTIONS
             </h1>
-            <p className="mb-8 text-base text-slate-300 max-w-md">
+            <p className="mb-4 sm:mb-8 text-sm sm:text-base text-slate-300 max-w-xs sm:max-w-md">
               High-performance chemical concentrates engineered for industrial, commercial, and residential excellence.
             </p>
             <div className="flex gap-3">
-              <button className="rounded-xl bg-blue-600 px-7 py-3 text-sm font-bold text-white shadow-lg shadow-blue-600/30 hover:bg-blue-700 transition-colors">
+              <button className="rounded-xl bg-blue-600 px-5 sm:px-7 py-2 sm:py-3 text-xs sm:text-sm font-bold text-white shadow-lg shadow-blue-600/30 hover:bg-blue-700 transition-colors">
                 Shop Best Sellers
               </button>
-              <button className="rounded-xl bg-white/10 px-7 py-3 text-sm font-bold text-white backdrop-blur hover:bg-white/20 transition-colors">
+              <button className="rounded-xl bg-white/10 px-5 sm:px-7 py-2 sm:py-3 text-xs sm:text-sm font-bold text-white backdrop-blur hover:bg-white/20 transition-colors">
                 View Catalog
               </button>
             </div>
@@ -212,16 +261,43 @@ export default function StorePage() {
         </section>
 
         <div className="flex flex-col lg:flex-row gap-8">
+          {/* Mobile Sidebar Toggle Button */}
+          <button 
+            onClick={() => setMobileSidebarOpen(true)}
+            className="lg:hidden fixed bottom-6 right-6 z-40 w-14 h-14 bg-blue-600 rounded-full shadow-lg shadow-blue-600/30 flex items-center justify-center text-white"
+          >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h7" />
+            </svg>
+          </button>
+
+          {/* Sidebar Overlay */}
+          {mobileSidebarOpen && (
+            <div className="fixed inset-0 z-40 lg:hidden" onClick={() => setMobileSidebarOpen(false)}>
+              <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" />
+            </div>
+          )}
+
           {/* Sidebar */}
-          <aside className="w-full lg:w-60 flex-shrink-0">
-            <div className="sticky top-20 rounded-2xl border border-slate-200 bg-white p-5">
+          <aside className={`fixed lg:relative z-50 lg:z-auto w-72 lg:w-60 h-full lg:h-auto flex-shrink-0 bg-white lg:bg-transparent transform transition-transform duration-300 ease-in-out ${
+            mobileSidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
+          }`}>
+            <div className="sticky top-20 rounded-2xl border border-slate-200 bg-white p-5 h-full lg:h-auto overflow-y-auto">
+              <div className="flex items-center justify-between mb-4 lg:hidden">
+                <p className="text-sm font-black text-slate-900">Categories</p>
+                <button onClick={() => setMobileSidebarOpen(false)} className="p-2 rounded-lg hover:bg-slate-100">
+                  <svg className="w-5 h-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
               <p className="mb-3 text-[10px] font-black uppercase tracking-widest text-slate-400">Categories</p>
               <ul className="space-y-1">
                 {sidebarLinks.map(({ icon, label }) => (
                   <li key={label}>
                     <a
                       href="#"
-                      onClick={(e) => { e.preventDefault(); handleSidebarClick(label); }}
+                      onClick={(e) => { e.preventDefault(); handleSidebarClick(label); setMobileSidebarOpen(false); }}
                       className={`flex items-center gap-3 rounded-xl px-3 py-2 text-sm font-semibold transition-colors ${
                         activeSidebar === label
                           ? "text-blue-600 bg-blue-50"
@@ -244,7 +320,7 @@ export default function StorePage() {
 
           {/* Product Grid */}
           <div className="flex-1">
-            <div className="mb-6 flex items-center justify-between">
+            <div className="mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
               <h2 className="text-lg font-black">
                 Featured Products{" "}
                 <span className="text-sm font-normal text-slate-400">({products.length} items)</span>
@@ -263,7 +339,7 @@ export default function StorePage() {
               {loading ? (
                 [...Array(6)].map((_, i) => <SkeletonCard key={i} />)
               ) : paginatedProducts.length === 0 ? (
-                <div className="col-span-3 text-center py-24">
+                <div className="col-span-1 sm:col-span-2 xl:col-span-3 text-center py-24">
                   <p className="text-4xl mb-4">🧹</p>
                   <p className="text-slate-500 font-semibold">No products found</p>
                   <p className="text-slate-400 text-sm mt-1">Try a different category or search term</p>
@@ -340,10 +416,10 @@ export default function StorePage() {
       </main>
 
       {/* Footer */}
-      <footer className="mt-20 border-t border-slate-200 bg-white py-12">
+      <footer className="mt-16 lg:mt-20 border-t border-slate-200 bg-white py-8 lg:py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            <div className="col-span-2 md:col-span-1">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 lg:gap-8">
+            <div className="sm:col-span-2 md:col-span-1">
               <div className="flex items-center gap-2 mb-4">
                 <div className="w-7 h-7 bg-blue-600 rounded-lg flex items-center justify-center text-white text-xs font-black">C</div>
                 <span className="text-base font-black text-slate-900">CleanPro</span>
@@ -368,7 +444,7 @@ export default function StorePage() {
             </div>
             <div>
               <p className="mb-4 text-[10px] font-black uppercase tracking-widest text-slate-400">Stay Updated</p>
-              <div className="flex gap-2">
+              <div className="flex flex-col sm:flex-row gap-2">
                 <input
                   className="flex-1 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/40"
                   placeholder="Email"
@@ -376,13 +452,13 @@ export default function StorePage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                 />
-                <button className="rounded-xl bg-blue-600 px-4 py-2 text-xs font-bold text-white hover:bg-blue-700 transition-colors">Join</button>
+                <button className="rounded-xl bg-blue-600 px-4 py-2 text-xs font-bold text-white hover:bg-blue-700 transition-colors whitespace-nowrap">Join</button>
               </div>
             </div>
           </div>
-          <div className="mt-10 border-t border-slate-100 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+          <div className="mt-8 lg:mt-10 border-t border-slate-100 pt-6 lg:pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-xs text-slate-400">© 2024 CleanPro Chemical Solutions. All rights reserved.</p>
-            <div className="flex gap-6 text-xs text-slate-400">
+            <div className="flex flex-wrap justify-center gap-4 lg:gap-6 text-xs text-slate-400">
               {["Privacy Policy", "Terms of Service", "SDS Database"].map((l) => (
                 <a key={l} className="hover:text-blue-600 transition-colors" href="#">{l}</a>
               ))}
@@ -393,3 +469,4 @@ export default function StorePage() {
     </div>
   );
 }
+

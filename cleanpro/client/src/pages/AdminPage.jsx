@@ -28,6 +28,7 @@ export default function AdminPage() {
   const [toast, setToast] = useState(null);
   const [activeNav, setActiveNav] = useState("Products");
   const [deleteConfirm, setDeleteConfirm] = useState(null);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const fileRef = useRef();
 
   useEffect(() => { fetchProducts(); }, []);
@@ -168,8 +169,17 @@ export default function AdminPage() {
         </div>
       )}
 
+      {/* Mobile Sidebar Overlay */}
+      {sidebarOpen && (
+        <div className="fixed inset-0 z-40 lg:hidden" onClick={() => setSidebarOpen(false)}>
+          <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" />
+        </div>
+      )}
+
       {/* Sidebar */}
-      <aside className="w-60 flex-shrink-0 border-r border-slate-200 bg-white flex flex-col">
+      <aside className={`fixed lg:relative z-50 lg:z-auto w-60 h-full flex-shrink-0 border-r border-slate-200 bg-white flex flex-col transform transition-transform duration-300 ease-in-out ${
+        sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
+      }`}>
         <div className="p-5">
           <div className="flex items-center gap-2.5 mb-8">
             <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white text-sm font-black">A</div>
@@ -205,14 +215,21 @@ export default function AdminPage() {
       </aside>
 
       {/* Main */}
-      <main className="flex-1 overflow-y-auto p-8">
-        <div className="max-w-6xl mx-auto space-y-8">
+      <main className="flex-1 overflow-y-auto p-4 lg:p-8">
+        <div className="max-w-6xl mx-auto space-y-6 lg:space-y-8">
 
           {/* Header */}
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <div>
-              <h2 className="text-3xl font-black tracking-tight text-slate-900">Products</h2>
-              <p className="text-slate-400 text-sm mt-0.5">Upload and manage your store inventory</p>
+            <div className="flex items-center gap-3">
+              <button onClick={() => setSidebarOpen(true)} className="lg:hidden p-2 rounded-lg hover:bg-slate-100 text-slate-600">
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+              </button>
+              <div>
+                <h2 className="text-2xl lg:text-3xl font-black tracking-tight text-slate-900">Products</h2>
+                <p className="text-slate-400 text-sm mt-0.5">Upload and manage your store inventory</p>
+              </div>
             </div>
             <div className="flex items-center gap-2">
               <Link to="/" className="px-4 py-2 border border-slate-200 rounded-xl text-sm font-semibold bg-white hover:bg-slate-50 text-slate-600 transition-colors">
@@ -221,14 +238,14 @@ export default function AdminPage() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Upload / Edit Form */}
-            <section className="xl:col-span-2 bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+            <section className="lg:col-span-2 bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
               <div className="p-5 border-b border-slate-100 flex items-center justify-between">
                 <h3 className="text-base font-black">{editingId ? "✏️ Edit Product" : "➕ Upload New Product"}</h3>
                 {editingId && <button onClick={resetForm} className="text-xs font-bold text-slate-400 hover:text-slate-600">✕ Cancel edit</button>}
               </div>
-              <div className="p-6 space-y-5">
+              <div className="p-4 lg:p-6 space-y-5">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                   <div className="space-y-1.5">
                     <label className="text-xs font-black text-slate-500 uppercase tracking-wider">Product Name *</label>
