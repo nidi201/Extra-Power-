@@ -34,6 +34,17 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: err.message || "Internal Server Error" });
 });
 
+// Serve static files in production
+if (process.env.NODE_ENV === "production") {
+  // Serve static files from client/dist
+  app.use(express.static(path.join(__dirname, "../client/dist")));
+  
+  // Catch-all route for SPA - serve index.html for any unknown routes
+  app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname, "../client/dist/index.html"));
+  });
+}
+
 // Connect to MongoDB
 mongoose
   .connect(MONGO_URI)
